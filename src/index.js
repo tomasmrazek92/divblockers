@@ -1,5 +1,4 @@
 $(document).ready(function () {
-  $('.page-wrapper').css('opacity', '1');
   // #region Loader
   let loaderEl = $('.preloader');
   let logoBox = $('.preloader_logo');
