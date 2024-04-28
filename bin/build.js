@@ -26,7 +26,7 @@ const context = await esbuild.context({
   define: {
     SERVE_ORIGIN: JSON.stringify(SERVE_ORIGIN),
   },
-  external: ['jquery', 'gsap', 'gsap/ScrollTrigger', 'swiper'],
+  external: ['jquery', 'gsap', 'gsap/ScrollTrigger', 'gsap/ScrambleTextPlugin', 'swiper'],
 });
 
 // Build files in prod

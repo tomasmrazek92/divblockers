@@ -7,7 +7,6 @@ specifiers:
   '@finsweet/ts-utils': ^0.39.0
   '@finsweet/tsconfig': ^1.2.0
   '@playwright/test': ^1.31.2
-  '@types/gsap': ^3.0.0
   '@types/jquery': ^3.5.16
   '@types/swiper': ^6.0.0
   '@typescript-eslint/eslint-plugin': ^5.55.0
@@ -18,7 +17,7 @@ specifiers:
   eslint-config-prettier: ^8.7.0
   eslint-plugin-prettier: ^4.2.1
   eslint-plugin-simple-import-sort: ^10.0.0
-  gsap: ^3.11.5
+  gsap: npm:@gsap/shockingly@^3.12.5
   luxon: ^3.3.0
   prettier: ^2.8.4
   run: ^1.4.0
@@ -27,7 +26,7 @@ specifiers:
 
 dependencies:
   '@finsweet/ts-utils': 0.39.0
-  gsap: 3.11.5
+  gsap: /@gsap/shockingly/3.12.5
   luxon: 3.4.3
   run: 1.4.0
   swiper: 9.2.4
@@ -38,7 +37,6 @@ devDependencies:
   '@finsweet/eslint-config': 2.0.3_qjc7w4lintnutswbpbrxy6eyou
   '@finsweet/tsconfig': 1.2.0
   '@playwright/test': 1.31.2
-  '@types/gsap': 3.0.0
   '@types/jquery': 3.5.16
   '@types/swiper': 6.0.0
   '@typescript-eslint/eslint-plugin': 5.55.0_342y7v4tc7ytrrysmit6jo4wri
@@ -531,6 +529,10 @@ packages:
     resolution: {integrity: sha512-Wq9Pz1Z/8aWLmJPms/P37kYQrAh1iNpHv0MMrekYitmuJ6MMFjhROQaZI+JfJkXicqng7vZHCrF0C+SN55be2Q==}
     dev: true
 
+  /@gsap/shockingly/3.12.5:
+    resolution: {integrity: sha512-JoZp6iYvOC+wkwl8zfXSqSrYCcuzTntaULCL08YMa1vonrYcr9D0K3EUe9PNpw7FYK1chjSwjjgcw3zS/O2SWg==}
+    dev: false
+
   /@humanwhocodes/config-array/0.11.8:
     resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==}
     engines: {node: '>=10.10.0'}
@@ -601,13 +603,6 @@ packages:
       playwright-core: 1.31.2
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
-
-  /@types/gsap/3.0.0:
-    resolution: {integrity: sha512-BbWLi4WRHGze4C8NV7U7yRevuBFiPkPZZyGa0rryanvh/9HPUFXTNBXsGQxJZJq7Ix7j4RXMYodP3s+OsqCErg==}
-    deprecated: This is a stub types definition. gsap provides its own type definitions, so you do not need this installed.
-    dependencies:
-      gsap: 3.11.5
     dev: true
 
   /@types/is-ci/3.0.0:
@@ -1616,9 +1611,6 @@ packages:
   /grapheme-splitter/1.0.4:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
-
-  /gsap/3.11.5:
-    resolution: {integrity: sha512-Q89nKCLgoX5xUjznh9LcaIUkz54k1voNucT1Rpf9SJNFIQznBwFqt5qUUQbeVInFyN/n18OUJkpeI6CNEDt74w==}
 
   /hard-rejection/2.1.0:
     resolution: {integrity: sha512-VIZB+ibDhx7ObhAe7OVtoEbuP4h/MuOTHJ+J8h/eBXotJYl0fBgR72xDFCKgIh22OJZIOVNxBMWuhAr10r8HdA==}

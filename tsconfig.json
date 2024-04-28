@@ -9,7 +9,7 @@
     "checkJs": false,
     "baseUrl": "./",
     "paths": {
-      "$utils/*": ["src/utils/*"]
+      "$utils/*": ["src/helpers/*"]
     },
     "types": ["@finsweet/ts-utils", "jquery", "gsap", "swiper"]
   }
