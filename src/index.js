@@ -1,71 +1,310 @@
 $(document).ready(function () {
-  // #region Loader
+  // #region Utility Classes
 
-  function preLoader() {
-    let loaderEl = $('.preloader');
-    let logoBox = $('.preloader_logo');
-    let logoLine = $('.preloader_line');
-    let logoBorder = $('.preloader_border');
-    let logoLogoText = $('.preloader_logo-text');
-    let logoLabel = $('.preloader .div-block_label');
-    let logoIntroText = $('.preloader_text');
-    let loader = gsap.timeline();
-
-    loader.to(logoBox.add(logoIntroText), { css: { fontWeight: 500, opacity: 1 }, duration: 1 });
-    loader.to(
-      logoIntroText,
-      {
-        scale: 0.25,
-        yPercent: -63,
-        xPercent: -30,
-        text: 'we-are',
-        duration: 0.5,
-        ease: 'expo.out',
-      },
-      '+=0.3'
-    );
-    loader.fromTo(
-      logoLine.eq(0),
-      { xPercent: 100 },
-      { xPercent: 0, opacity: 1, duration: 0.5 },
-      '<'
-    );
-    loader.addLabel('Show Label');
-    loader.fromTo(
-      logoLine.eq(1),
-      { xPercent: -100 },
-      { xPercent: 0, opacity: 1, duration: 0.5 },
-      '<'
-    );
-    loader.fromTo(
-      logoLine.eq(2),
-      { yPercent: 100 },
-      { yPercent: 0, opacity: 1, duration: 0.5 },
-      '<'
-    );
-    loader.fromTo(
-      logoLine.eq(3),
-      { yPercent: -100 },
-      { yPercent: 0, opacity: 1, duration: 0.5 },
-      '<'
-    );
-    loader.to([logoLine.eq(0), logoLine.eq(1)], { scaleX: 0, duration: 1 });
-    loader.to([logoLine.eq(2), logoLine.eq(3)], { scaleX: 0, duration: 0.35 }, '<');
-    loader.to(logoBorder, { opacity: 1 }, '<');
-    loader.to(logoLabel, { opacity: 1 }, 'Show Label');
-    loader.to(logoIntroText, { opacity: 0 }, '<');
-
-    loader.to(logoLogoText, { opacity: 1 }, '<0.2');
-    loader.to(logoBox, { width: '110vw', height: '110dvh', duration: 0.75 });
-    loader.to(logoLogoText, { opacity: 0 }, '<');
-    loader.to($('.page-wrapper'), { opacity: 1 }, '<');
-    loader.to(loaderEl, { display: 'none' });
+  function toggleWFLabel(label, state) {
+    let editClass = 'edit';
+    if (state) {
+      label.addClass(editClass);
+    } else {
+      label.removeClass(editClass);
+    }
   }
+
+  function handleLabelClick(label, callback) {
+    $(label).on('click', function () {
+      toggleWFLabel(label, false);
+      callback();
+    });
+  }
+
+  // #endregion
+
+  // #region Button CTA
+  // Get the element
+  // Get all the buttons
+  const buttons = document.querySelectorAll('.btn_wrap'); // Replace '.button-selector' with your actual class or selector that matches all buttons
+
+  // Helper function to interpolate values
+  function interpolate(start, end, ratio) {
+    return start + (end - start) * ratio;
+  }
+
+  // Animation function for rotation
+  function animateRotation(element, duration, startTime) {
+    const currentTime = Date.now();
+    const elapsedTime = currentTime - startTime;
+    const ratio = elapsedTime / duration;
+
+    let rotation;
+    if (ratio < 0.3282275711) {
+      rotation = interpolate(0, 0, ratio / 0.3282275711);
+    } else if (ratio < 0.5) {
+      rotation = interpolate(0, 180, (ratio - 0.3282275711) / (0.5 - 0.3282275711));
+    } else if (ratio < 0.8282275711) {
+      rotation = 180;
+    } else if (ratio <= 1) {
+      rotation = interpolate(180, 360, (ratio - 0.8282275711) / (1 - 0.8282275711));
+    } else {
+      rotation = 360;
+      startTime = currentTime; // Reset startTime for looping
+    }
+
+    element.style.setProperty('--r2', `${rotation}deg`);
+
+    if (ratio <= 1) {
+      requestAnimationFrame(() => animateRotation(element, duration, startTime));
+    } else {
+      requestAnimationFrame(() => animateRotation(element, duration, Date.now()));
+    }
+  }
+
+  // Animation function for horizontal movement
+  function animateMovement(element, duration, startTime) {
+    const currentTime = Date.now();
+    const elapsedTime = currentTime - startTime;
+    const ratio = elapsedTime / duration;
+
+    let position;
+    if (ratio < 0.3282275711) {
+      position = interpolate(10, 90, ratio / 0.3282275711);
+    } else if (ratio < 0.5) {
+      position = 90;
+    } else if (ratio < 0.8282275711) {
+      position = interpolate(90, 10, (ratio - 0.5) / (0.8282275711 - 0.5));
+    } else if (ratio <= 1) {
+      position = 10;
+    } else {
+      position = 10;
+      startTime = currentTime; // Reset startTime for looping
+    }
+
+    element.style.setProperty('--x', `${position}%`);
+
+    if (ratio <= 1) {
+      requestAnimationFrame(() => animateMovement(element, duration, startTime));
+    } else {
+      requestAnimationFrame(() => animateMovement(element, duration, Date.now()));
+    }
+  }
+
+  // Start the animations for each button
+  buttons.forEach((button) => {
+    animateRotation(button, 3000, Date.now());
+    animateMovement(button, 3000, Date.now());
+  });
+
+  // #endregion
+
+  // #region Form
+  function logSubmit(event) {
+    $('.sidebar_trigger').trigger('click');
+    gsap.fromTo($('.sidebar_success'), { y: '-8rem' }, { y: '0', display: 'flex' });
+
+    setTimeout(() => {
+      $('.sidebar_success').fadeOut();
+    }, 8000);
+  }
+
+  const form = document.getElementById('wf-form-get-in-touch-form');
+  form.addEventListener('submit', logSubmit);
+
+  let formInputs = $('.form_input');
+
+  formInputs.hover(
+    function () {
+      $(this).siblings().addClass('active');
+    },
+    function () {
+      $(this).siblings().removeClass('active');
+    }
+  );
+
+  formInputs.on('focus', function () {
+    $(this).siblings().addClass('active');
+  });
+  formInputs.on('blur', function () {
+    $(this).siblings().removeClass('active');
+  });
+  // #endregion
+
+  // #region Loader
+  gsap.registerPlugin(SplitText);
+
+  // Moving images
+  function animatePreloaderImages() {
+    // Select all elements with the class .preloader_img
+    const images = document.querySelectorAll('.preloader_img');
+
+    // Iterate over each image
+    images.forEach((image) => {
+      // Generate a random distance between 300vh to 500vh
+      const distance = Math.random() * 200 + 200; // 300 to 500
+
+      // Randomly decide direction, up (negative) or down (positive)
+      const direction = Math.random() > 0.5 ? 1 : -1;
+
+      // Create the animation for the current image
+      gsap.to(image, {
+        y: `${direction * distance}vh`,
+        duration: 10, // duration of the animation in seconds
+        ease: 'linear',
+      });
+    });
+  }
+
+  // Text Replacement
+  let currentIndex = 0;
+
+  function animateText() {
+    let words = ['We are', 'Webflow', 'Studio'];
+
+    if (currentIndex < words.length) {
+      const textElement = document.querySelector('.preloader_text');
+      textElement.textContent = words[currentIndex];
+
+      let tl8 = gsap.timeline({
+        onComplete: () => {
+          // Increment to next word or loop to start
+          currentIndex = currentIndex + 1;
+          animateText(); // Restart animation with new word
+        },
+      });
+
+      // Initial animation from 100% bottom to 0%
+      tl8.fromTo(
+        textElement,
+        {
+          y: '100%',
+          opacity: 0,
+        },
+        {
+          y: '0%',
+          opacity: 1,
+          duration: 0.5,
+          ease: 'expo.out',
+        }
+      );
+      if (currentIndex < words.length - 1) {
+        tl8.to(
+          textElement,
+          {
+            y: '-100%',
+            opacity: 0,
+            duration: 0.5,
+            ease: 'expo.in',
+          },
+          '+=0.35'
+        );
+      }
+    }
+  }
+
+  // Init
+  animateText();
+  animatePreloaderImages();
+
   $('.page-wrapper').css('opacity', ' 1');
-  $('.preloader').hide();
 
   // Init
   // preLoader();
+
+  // #endregion
+
+  // #region ScrollDisabler
+  $(document).ready(function () {
+    var $body = $(document.body);
+    var scrollPosition = 0;
+    var isScrollDisabled = false;
+    var currentBreakpoint = '';
+
+    function toggleScroll() {
+      if (isScrollDisabled) {
+        enableScroll();
+      } else {
+        disableScroll();
+      }
+    }
+
+    function disableScroll() {
+      var oldWidth = $body.innerWidth();
+      scrollPosition = window.pageYOffset;
+      $body.css({
+        overflow: 'hidden',
+        position: 'fixed',
+        top: `-${scrollPosition}px`,
+        width: oldWidth,
+      });
+      isScrollDisabled = true;
+    }
+
+    function enableScroll() {
+      $body.css({
+        overflow: '',
+        position: '',
+        top: '',
+        width: '',
+      });
+      $(window).scrollTop(scrollPosition);
+      isScrollDisabled = false;
+    }
+
+    // Click Event
+    $('[scroll="toggle"]').on('click', toggleScroll);
+
+    // Run on resize
+    const breakpoints = [991, 767, 479];
+    let lastWidth = window.innerWidth;
+
+    function handleBreakpoint(breakpoint) {
+      if (isScrollDisabled) {
+        enableScroll();
+      }
+    }
+
+    // Function to check breakpoints on window resize
+    function checkBreakpoints() {
+      const currentWidth = window.innerWidth;
+
+      breakpoints.forEach((breakpoint) => {
+        if (
+          (lastWidth <= breakpoint && currentWidth > breakpoint) ||
+          (lastWidth >= breakpoint && currentWidth < breakpoint)
+        ) {
+          handleBreakpoint(breakpoint);
+        }
+      });
+
+      // Update lastWidth for the next call
+      lastWidth = currentWidth;
+    }
+
+    // Event listener for window resize
+    window.addEventListener('resize', checkBreakpoints);
+  });
+  // #endregion
+
+  // #region Sticky CTA
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  ScrollTrigger.matchMedia({
+    // large
+    '(min-width: 768px)': function () {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $('.section_partners'),
+          top: 'top top',
+          toggleActions: 'play none none reverse',
+        },
+      });
+
+      tl.set($('.btn_wrap.is-nav'), { display: 'block' });
+      tl.set([$('.hero_col.full,.hero_team-meta')], { pointerEvents: 'none' });
+      tl.set($('.hero_team-meta'), { display: 'none' });
+      tl.set([$('.hero_top')], { position: 'fixed', zIndex: 99 });
+      tl.fromTo($('.btn_wrap.is-nav'), { opacity: 0 }, { opacity: 1 });
+    },
+  });
 
   // #endregion
 
@@ -242,27 +481,15 @@ $(document).ready(function () {
 
     $('._wf-ui-colors-block').on('click', function () {
       let color = $(this).css('background-color');
-      updateLabel(label, true);
+      toggleWFLabel(label, true);
       title.css('color', color);
       $('html').css('--wf-ui--lines', color);
     });
 
-    $(label).on('click', function () {
-      if ($(this).hasClass(editClass)) {
-        updateLabel(label, false);
-        title.css('color', 'inherit');
-        $('html').css('--wf-ui--lines', 'var(--color--main)');
-      }
+    handleLabelClick(label, () => {
+      title.css('color', 'inherit');
+      $('html').css('--wf-ui--lines', 'var(--color--main)');
     });
-  }
-
-  function updateLabel(label, toggle) {
-    let editClass = 'edit';
-    if (toggle) {
-      label.addClass(editClass);
-    } else {
-      label.removeClass(editClass);
-    }
   }
 
   // --- Actual Time
@@ -448,12 +675,12 @@ $(document).ready(function () {
     $textarea.on('input', updateFontSize);
 
     /* Update initial font size on window resize
-    $(window).on('resize', function () {
-      initialFontSize = parseInt($textarea.css('font-size'), 10); // Update the initial font size
-      maxHeight = $textarea.height(); // Update the max height of the textarea
-      updateFontSize(); // Update the font size immediately on resize
-    });
-    */
+  $(window).on('resize', function () {
+    initialFontSize = parseInt($textarea.css('font-size'), 10); // Update the initial font size
+    maxHeight = $textarea.height(); // Update the max height of the textarea
+    updateFontSize(); // Update the font size immediately on resize
+  });
+  */
   });
 
   // ---- Keep the same height
@@ -1000,9 +1227,7 @@ $(document).ready(function () {
           onComplete: () => {
             gsap.to(quoteEl, {
               height: () => {
-                if ($(window).width() < 992) {
-                  return quoteInner.outerHeight();
-                }
+                return quoteInner.outerHeight();
               },
               yPercent: 0,
               opacity: 1,
@@ -1086,48 +1311,97 @@ $(document).ready(function () {
   // #endregion
 
   // #region Duo
-  // ---- Draging Paragraph
+  // ---- Draging & Input
   function setupDraggers(draggers) {
     draggers.forEach((dragger) => {
+      // Els
       const dragInput = $(dragger.element + ' ._wf-spacer-input');
-      const valueInput = dragInput; // Assuming the value input is the same as drag input
+      const valueInput = dragInput;
       const dragHandle = $(dragger.element + ' ._wf-draggable');
-      let isDragging = false;
+
+      // Vals
+      const defaultValue = dragInput.val();
       const minValue = parseFloat(dragger.minVal); // Minimum allowed value
       const maxValue = parseFloat(dragger.maxVal); // Maximum allowed value
+
+      // MISC
       const step = parseFloat(dragger.step); // Incremental step for decimal places
+      const { type } = dragger;
 
-      dragHandle.on('mousedown', function (event) {
-        isDragging = true;
-        const startX = event.clientX;
-        const startValue = parseFloat(valueInput.val()) || 0;
+      // Flag
+      let isDragging = false;
 
-        $(document).on('mousemove', function (event) {
-          if (isDragging) {
-            const offsetX = event.clientX - startX;
-            let newValue = startValue + offsetX * step;
+      // Label
+      let label = $(dragger.element).find('._wf-ui_label');
 
-            // Apply the minimum and maximum value constraints
-            newValue = Math.max(minValue, Math.min(maxValue, newValue));
+      handleLabelClick(label, () => {
+        dragInput.val(defaultValue);
+        dragger.updateVariable(defaultValue);
+      });
 
-            // Round to one decimal place
-            newValue = parseFloat(newValue.toFixed(1));
+      // Function
+      function updateValue(value) {
+        dragger.updateVariable(value);
 
-            valueInput.val(newValue);
+        if (label) {
+          toggleWFLabel(label, true);
+        }
+      }
 
-            // Update the CSS variable using the function provided
-            if (dragger.updateVariable) {
-              dragger.updateVariable(newValue);
+      // Update Value
+      if (type === 'drag') {
+        dragHandle.on('mousedown', function (event) {
+          isDragging = true;
+          const startX = event.clientX;
+          const startValue = parseFloat(valueInput.val()) || 0;
+
+          $(document).on('mousemove', function (event) {
+            if (isDragging) {
+              const offsetX = event.clientX - startX;
+              let newValue = startValue + offsetX * step;
+
+              // Apply the minimum and maximum value constraints
+              newValue = Math.max(minValue, Math.min(maxValue, newValue));
+
+              // Round to one decimal place
+              newValue = parseFloat(newValue.toFixed(1));
+
+              valueInput.val(newValue);
+
+              // Update the CSS variable using the function provided
+              if (dragger.updateVariable) {
+                updateValue(newValue);
+              }
             }
+          });
+
+          $(document).on('mouseup', function () {
+            isDragging = false;
+            $(document).off('mousemove');
+            $(document).off('mouseup');
+          });
+        });
+      } else if (type === 'input') {
+        dragInput.on('keydown', function (event) {
+          let currentValue = parseInt($(this).val()) || 0; // Get current value or default to 0 if not a number
+          if (event.which === 38 || event.which === 104) {
+            // Arrow up or numpad 8
+            $(this)
+              .val(currentValue + 1)
+              .trigger('change'); // Increment, set, and trigger change
+          } else if (event.which === 40 || event.which === 98) {
+            // Arrow down or numpad 2
+            $(this)
+              .val(currentValue - 1)
+              .trigger('change'); // Decrement, set, and trigger change
           }
         });
 
-        $(document).on('mouseup', function () {
-          isDragging = false;
-          $(document).off('mousemove');
-          $(document).off('mouseup');
+        dragInput.on('change', function () {
+          let newValue = $(this).val();
+          updateValue(newValue);
         });
-      });
+      }
     });
   }
 
@@ -1135,6 +1409,7 @@ $(document).ready(function () {
   const draggers = [
     {
       element: '.ui-divider',
+      type: 'drag',
       minVal: '0',
       maxVal: '30',
       step: '0.1',
@@ -1144,6 +1419,7 @@ $(document).ready(function () {
     },
     {
       element: '.ui-opacity',
+      type: 'input',
       minVal: '0',
       maxVal: '100',
       step: '1',
@@ -1152,6 +1428,39 @@ $(document).ready(function () {
       },
     },
   ];
+
+  // ---- Display Option
+  let block = $('.duo_person._2');
+  let baseClass = block.attr('class');
+  let displayBoxes = $('.ui-display ._wf-box_inner');
+  let label = $('.ui-display ._wf-ui_label');
+
+  // Functions
+  function toggleActiveBox(index) {
+    displayBoxes.removeClass('active');
+    displayBoxes.eq(index).addClass('active');
+  }
+
+  // Blocks
+  $('.ui-display ._wf-box_inner').on('click', function () {
+    let type = $(this).attr('data-display');
+
+    // Toggle States
+    block.attr('class', baseClass).addClass(type);
+
+    // Active state
+    toggleActiveBox($(this).index());
+
+    toggleWFLabel(label, true);
+  });
+
+  // Label Clicks
+  handleLabelClick(label, () => {
+    block.attr('class', baseClass);
+    toggleActiveBox(0);
+  });
+
+  // Label
 
   setupDraggers(draggers);
   // #endregion
