@@ -474,7 +474,7 @@ $(document).ready(function () {
     let tl = gsap.timeline({
       scrollTrigger: {
         trigger: $('.section_work'),
-        start: 'top bottom',
+        start: '100px bottom',
         end: 'bottom bottom',
         scrub: 1,
         invalidateOnRefresh: true,
