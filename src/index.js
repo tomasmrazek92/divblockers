@@ -242,9 +242,14 @@ $(document).ready(function () {
     animatePreloaderImages();
   }
 
-  $('.page-wrapper').css('opacity', ' 1');
-
   // Init
+  $(window).scrollTop(0);
+  $(window).on('beforeunload', function () {
+    $('body').css('opacity', '0');
+    $(window).scrollTop(0);
+  });
+
+  $('.page-wrapper').css('opacity', ' 1');
   initLoader();
 
   // #endregion
@@ -482,17 +487,9 @@ $(document).ready(function () {
         return heroPar.outerHeight() / 2;
       },
       keyframes: {
-        '20%': { opacity: 0.15 },
+        '20%': { opacity: 0.15, filter: 'blur(10px)' },
       },
     });
-    tl.to(
-      heroHeading,
-      {
-        filter: 'blur(10px)',
-        opacity: 0.15,
-      },
-      '<+=0.4'
-    );
 
     let tl1 = gsap.timeline({
       scrollTrigger: {
