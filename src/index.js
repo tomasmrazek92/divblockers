@@ -18,7 +18,6 @@ $(document).ready(function () {
   }
 
   // #endregion
-
   // #region Button CTA
   // Get the element
   // Get all the buttons
@@ -128,85 +127,125 @@ $(document).ready(function () {
   // #endregion
 
   // #region Loader
-  gsap.registerPlugin(SplitText);
+  function initLoader() {
+    gsap.registerPlugin(SplitText, CustomEase);
+    CustomEase.create('primary', '0.57, 0, 0.08, 1');
+    gsap.defaults({ ease: 'primary' });
 
-  // Moving images
-  function animatePreloaderImages() {
-    // Select all elements with the class .preloader_img
-    const images = document.querySelectorAll('.preloader_img');
+    // Default
+    gsap.set('.preloader', { display: 'flex' });
+    gsap.set(['html', 'body'], { height: '100vh', overflow: 'hidden' });
+    gsap.set('[data-hide-default]', { opacity: 0 });
 
-    // Iterate over each image
-    images.forEach((image) => {
-      // Generate a random distance between 300vh to 500vh
-      const distance = Math.random() * 200 + 200; // 300 to 500
+    // Moving images
+    function animatePreloaderImages() {
+      // Select all elements with the class .preloader_img
+      const $images = $('.preloader_img').not('[data-no-move]');
 
-      // Randomly decide direction, up (negative) or down (positive)
-      const direction = Math.random() > 0.5 ? 1 : -1;
+      // Iterate over each image
+      $images.each(function () {
+        // Generate a random distance
+        const distance = Math.random() * 10 + 50;
 
-      // Create the animation for the current image
-      gsap.to(image, {
-        y: `${direction * distance}vh`,
-        duration: 10, // duration of the animation in seconds
-        ease: 'linear',
+        // Create the animation for the current image
+        gsap.to($(this), {
+          y: `-${distance}vh`,
+          duration: 10, // duration of the animation in seconds
+          ease: 'linear',
+        });
       });
-    });
-  }
+    }
 
-  // Text Replacement
-  let currentIndex = 0;
+    // Text Replacement
+    let currentIndex = 0;
 
-  function animateText() {
-    let words = ['We are', 'Webflow', 'Studio'];
+    function animateText() {
+      let words = ['We are', 'Webflow', 'Studio'];
 
-    if (currentIndex < words.length) {
-      const textElement = document.querySelector('.preloader_text');
-      textElement.textContent = words[currentIndex];
+      if (currentIndex < words.length) {
+        const textElement = document.querySelector('.preloader_text');
+        textElement.textContent = words[currentIndex];
 
-      let tl8 = gsap.timeline({
-        onComplete: () => {
-          // Increment to next word or loop to start
-          currentIndex = currentIndex + 1;
-          animateText(); // Restart animation with new word
-        },
-      });
-
-      // Initial animation from 100% bottom to 0%
-      tl8.fromTo(
-        textElement,
-        {
-          y: '100%',
-          opacity: 0,
-        },
-        {
-          y: '0%',
-          opacity: 1,
-          duration: 0.5,
-          ease: 'expo.out',
+        if (currentIndex === 0) {
+          moveImages(-1);
         }
-      );
-      if (currentIndex < words.length - 1) {
-        tl8.to(
+        let tl8 = gsap.timeline({
+          delay: 0.5,
+          onComplete: () => {
+            // Increment to next word or loop to start
+            currentIndex = currentIndex + 1;
+            animateText(); // Restart animation with new word
+          },
+        });
+
+        // Initial animation from 100% bottom to 0%
+        tl8.fromTo(
           textElement,
           {
-            y: '-100%',
+            y: '10%',
             opacity: 0,
-            duration: 0.5,
-            ease: 'expo.in',
           },
-          '+=0.35'
+          {
+            y: '0%',
+            opacity: 1,
+            duration: 0.8,
+          }
         );
+
+        if (currentIndex < words.length - 1) {
+          tl8.to(
+            textElement,
+            {
+              y: '-10%',
+              opacity: 0,
+              duration: 0.4,
+              onStart: () => {
+                moveImages(currentIndex);
+              },
+            },
+            '+=0.2'
+          );
+        }
+      } else {
+        setTimeout(() => {
+          moveImages(currentIndex + 2);
+        }, 300);
+        setTimeout(() => {
+          let tl = gsap.timeline();
+          tl.to('.preloader_text', { y: '10%', opacity: 0, duration: 0.3, ease: 'power1.inOut' });
+          tl.fromTo(
+            '.hero_heading',
+            { y: '10%', opacity: 0 },
+            { y: '0%', opacity: 1, duration: 0.3, ease: 'power1.inOut' },
+            '+=0.2'
+          );
+          tl.to('[data-hide-default]', { opacity: 1 });
+          tl.set('.preloader', { display: 'none' });
+          tl.set(['html', 'body'], { height: 'auto', overflow: 'visible' });
+        }, 600);
       }
     }
-  }
 
-  // Init
-  animateText();
-  animatePreloaderImages();
+    function moveImages(index) {
+      gsap.to('.preloader_col:first-child', {
+        y: `-${(index + 1) * 100}vh`,
+        duration: 2,
+      });
+      gsap.to('.preloader_col:last-child', {
+        y: `-${(index + 1) * 100}vh`,
+        duration: 2,
+      });
+    }
+
+    // Init
+    animateText();
+    animatePreloaderImages();
+  }
 
   $('.page-wrapper').css('opacity', ' 1');
 
   // Init
-  // preLoader();
+  initLoader();
 
   // #endregion
 
@@ -398,7 +437,7 @@ $(document).ready(function () {
         }
 
         tl.to(
-          $(element).find(`#line-visual-${num}`).get(0),
+          visualElement,
           {
             ...basicParam,
             delay,
