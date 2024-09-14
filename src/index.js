@@ -355,11 +355,9 @@ $(document).ready(function () {
   window.scrollTo(0, 0); // Set scroll position to top after page load
   $('.page-wrapper').css('opacity', '1');
   if (!loaderState) {
-    alert(sessionStorage.getItem('loaderState'));
     initLoader();
     sessionStorage.setItem('loaderState', 'true');
   } else {
-    alert(sessionStorage.getItem('loaderState'));
     revealSite();
   }
 
