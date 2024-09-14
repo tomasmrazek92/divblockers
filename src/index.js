@@ -335,9 +335,9 @@ $(document).ready(function () {
     history.scrollRestoration = 'manual'; // Disable browser's automatic scroll restoration
   }
 
-  $(window).on('beforeunload', function () {
+  $(window).on('unload', function () {
     $('body').css('opacity', '0');
-    window.scrollTo(0, 0);
+    $(window).scrollTop(0);
   });
 
   // Init
