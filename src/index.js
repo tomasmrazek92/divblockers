@@ -213,6 +213,24 @@ $(document).ready(function () {
   // #endregion
 
   // #region Loader
+
+  // Finish Reveal
+  function revealSite() {
+    let tl = gsap.timeline();
+
+    tl.fromTo(
+      '.hero_heading',
+      { y: '10%', opacity: 0 },
+      { y: '0%', opacity: 1, duration: 0.3, ease: 'power1.inOut' },
+      '+=0.2'
+    );
+    tl.to('[data-hide-default]', { opacity: 1 });
+    tl.set('.preloader', { display: 'none' });
+    tl.set(['html', 'body'], { height: 'auto', overflow: 'visible' });
+    tl;
+
+    return tl;
+  }
   function initLoader() {
     gsap.registerPlugin(SplitText, CustomEase);
     CustomEase.create('primary', '0.57, 0, 0.08, 1');
@@ -301,15 +319,7 @@ $(document).ready(function () {
         setTimeout(() => {
           let tl = gsap.timeline();
           tl.to('.preloader_text', { y: '10%', opacity: 0, duration: 0.3, ease: 'power1.inOut' });
-          tl.fromTo(
-            '.hero_heading',
-            { y: '10%', opacity: 0 },
-            { y: '0%', opacity: 1, duration: 0.3, ease: 'power1.inOut' },
-            '+=0.2'
-          );
-          tl.to('[data-hide-default]', { opacity: 1 });
-          tl.set('.preloader', { display: 'none' });
-          tl.set(['html', 'body'], { height: 'auto', overflow: 'visible' });
+          tl.add(revealSite());
         }, 600);
       }
     }
@@ -341,9 +351,17 @@ $(document).ready(function () {
   });
 
   // Init
+
   window.scrollTo(0, 0); // Set scroll position to top after page load
   $('.page-wrapper').css('opacity', '1');
-  initLoader();
+  if (!loaderState) {
+    alert('Preloader True');
+    initLoader();
+    sessionStorage.setItem('loaderState', 'true');
+  } else {
+    alert('Preloader False');
+    revealSite();
+  }
 
   // #endregion
 
