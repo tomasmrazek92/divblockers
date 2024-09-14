@@ -331,12 +331,13 @@ $(document).ready(function () {
   }
 
   // Init
-  $(window).scrollTop(0);
+  history.scrollRestoration = 'manual';
   $(window).on('beforeunload', function () {
     $('body').css('opacity', '0');
-    $(window).scrollTop(0);
+    window.scrollTo(0, 0);
   });
 
+  window.scrollTo(0, 0);
   $('.page-wrapper').css('opacity', ' 1');
   initLoader();
 
