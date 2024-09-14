@@ -17,7 +17,43 @@ $(document).ready(function () {
     });
   }
 
+  function darkMenu() {
+    $('[dark-menu-section]').each(function () {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: 'top 36px',
+          end: 'bottom 36px',
+          onEnter: () => {
+            let nav = $('.hero_top');
+
+            if (!nav.hasClass('cc-dark')) {
+              nav.addClass('cc-dark');
+            }
+          },
+          onEnterBack: () => {
+            let nav = $('.hero_top');
+
+            if (!nav.hasClass('cc-dark')) {
+              nav.addClass('cc-dark');
+            }
+          },
+          onLeaveBack: () => {
+            let nav = $('.hero_top');
+            nav.removeClass('cc-dark');
+          },
+          onLeave: () => {
+            let nav = $('.hero_top');
+            nav.removeClass('cc-dark');
+          },
+        },
+      });
+    });
+  }
+  darkMenu();
+
   // #endregion
+
   // #region Button CTA
   // Get the element
   // Get all the buttons
@@ -104,10 +140,17 @@ $(document).ready(function () {
     }, 8000);
   }
 
+  $('select').niceSelect();
+
+  $('.nice-select li').on('click', function () {
+    $('.nice-select .current').css('color', 'white');
+  });
+
   const form = document.getElementById('wf-form-get-in-touch-form');
   form.addEventListener('submit', logSubmit);
 
   let formInputs = $('.form_input');
+  console.log(formInputs);
 
   formInputs.hover(
     function () {
@@ -124,6 +167,49 @@ $(document).ready(function () {
   formInputs.on('blur', function () {
     $(this).siblings().removeClass('active');
   });
+
+  function copyEmails() {
+    // Paste here
+    var $temp = $('<input>');
+    let timeOut;
+
+    // Click
+    $('.sidebar_email').click(function () {
+      var $url = $(this).text();
+      let ogText = $('.sidebar_label').text();
+
+      $('body').append($temp);
+      $temp.val($url).select();
+      document.execCommand('copy');
+      $temp.remove();
+
+      clearTimeout(timeOut); // Corrected the function name and variable consistency
+      $('.sidebar_label').text('Copied to a clipboard');
+      timeOut = setTimeout(() => {
+        // Corrected the function name and fixed variable naming consistency
+        $('.sidebar_label').text(ogText);
+      }, 2000);
+    });
+
+    // Click
+    $('#copyEmailFooter').click(function () {
+      var $url = 'hello@divblockers.com';
+      $('body').append($temp);
+      $temp.val($url).select();
+      document.execCommand('copy');
+      $temp.remove();
+
+      clearTimeout(timeOut); // Corrected the function name and variable consistency
+      $(this).find('.meta-text').text('Copied to a clipboard');
+      timeOut = setTimeout(() => {
+        // Corrected the function name and fixed variable naming consistency
+        $(this).find('.meta-text').text('Email');
+      }, 2000);
+    });
+  }
+
+  copyEmails();
+
   // #endregion
 
   // #region Loader
@@ -189,6 +275,7 @@ $(document).ready(function () {
             y: '0%',
             opacity: 1,
             duration: 0.8,
+            ease: 'power2.inOut',
           }
         );
 
@@ -199,6 +286,7 @@ $(document).ready(function () {
               y: '-10%',
               opacity: 0,
               duration: 0.4,
+              ease: 'power2.inOut',
               onStart: () => {
                 moveImages(currentIndex);
               },
@@ -336,8 +424,8 @@ $(document).ready(function () {
     '(min-width: 768px)': function () {
       let tl = gsap.timeline({
         scrollTrigger: {
-          trigger: $('.section_partners'),
-          top: 'top top',
+          trigger: $('.section_work'),
+          start: '310 bottom',
           toggleActions: 'play none none reverse',
         },
       });
@@ -345,7 +433,6 @@ $(document).ready(function () {
       tl.set($('.btn_wrap.is-nav'), { display: 'block' });
       tl.set([$('.hero_col.full,.hero_team-meta')], { pointerEvents: 'none' });
       tl.set($('.hero_team-meta'), { display: 'none' });
-      tl.set([$('.hero_top')], { position: 'fixed', zIndex: 99 });
       tl.fromTo($('.btn_wrap.is-nav'), { opacity: 0 }, { opacity: 1 });
     },
   });
@@ -488,6 +575,7 @@ $(document).ready(function () {
       },
       keyframes: {
         '20%': { opacity: 0.15, filter: 'blur(10px)' },
+        '90%': { opacity: 0 },
       },
     });
 
@@ -508,6 +596,21 @@ $(document).ready(function () {
       },
       '<'
     );
+  }
+
+  function heroInfo() {
+    let tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: $('.section_work'),
+        start: '20px bottom',
+        end: '40px bottom',
+        scrub: 1,
+        invalidateOnRefresh: true,
+        markers: true,
+      },
+    });
+
+    tl.to(['.hero_btn-box', '.hero_notification'], { opacity: 0 });
   }
 
   // ---- Label Color Change
@@ -583,6 +686,7 @@ $(document).ready(function () {
 
   // Init
   heroSticky();
+  heroInfo();
   titleColor();
   heroTime();
   updateNavBrand();
@@ -1308,8 +1412,8 @@ $(document).ready(function () {
     breakpoints: {
       0: {
         direction: 'horizontal',
-        slidesPerView: 'auto',
-        spaceBetween: 24,
+        slidesPerView: 1,
+        spaceBetween: 16,
         initialSlide: 0,
         threshold: 10,
         freeMode: {
@@ -1341,8 +1445,6 @@ $(document).ready(function () {
       updateQuote(this);
     }, 300);
   });
-
-  console.log(swiper);
 
   // #endregion
 
@@ -1447,7 +1549,7 @@ $(document).ready(function () {
       element: '.ui-divider',
       type: 'drag',
       minVal: '0',
-      maxVal: '30',
+      maxVal: '40',
       step: '0.1',
       updateVariable: (newValue) => {
         document.documentElement.style.setProperty('--duo-padding', newValue + 'vw');
@@ -1483,6 +1585,11 @@ $(document).ready(function () {
 
     // Toggle States
     block.attr('class', baseClass).addClass(type);
+    if (type === 'hidden') {
+      $('.duo_person._1').addClass(type);
+    } else {
+      $('.duo_person._1').removeClass('hidden');
+    }
 
     // Active state
     toggleActiveBox($(this).index());
@@ -1493,6 +1600,7 @@ $(document).ready(function () {
   // Label Clicks
   handleLabelClick(label, () => {
     block.attr('class', baseClass);
+    $('.duo_person._1').removeClass('hidden');
     toggleActiveBox(0);
   });
 
