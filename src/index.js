@@ -330,15 +330,19 @@ $(document).ready(function () {
     animatePreloaderImages();
   }
 
-  // Init
-  history.scrollRestoration = 'manual';
+  // Scroll Fix
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual'; // Disable browser's automatic scroll restoration
+  }
+
   $(window).on('beforeunload', function () {
     $('body').css('opacity', '0');
     window.scrollTo(0, 0);
   });
 
-  window.scrollTo(0, 0);
-  $('.page-wrapper').css('opacity', ' 1');
+  // Init
+  window.scrollTo(0, 0); // Set scroll position to top after page load
+  $('.page-wrapper').css('opacity', '1');
   initLoader();
 
   // #endregion
@@ -1338,14 +1342,15 @@ $(document).ready(function () {
 
       // Update Value
       if (type === 'drag') {
-        dragHandle.on('mousedown', function (event) {
+        dragHandle.on('mousedown touchstart', function (event) {
           isDragging = true;
-          const startX = event.clientX;
+          const startX = event.type === 'touchstart' ? event.touches[0].clientX : event.clientX;
           const startValue = parseFloat(valueInput.val()) || 0;
 
-          $(document).on('mousemove', function (event) {
+          $(document).on('mousemove touchmove', function (event) {
             if (isDragging) {
-              const offsetX = event.clientX - startX;
+              const clientX = event.type === 'touchmove' ? event.touches[0].clientX : event.clientX;
+              const offsetX = clientX - startX;
               let newValue = startValue + offsetX * step;
 
               // Apply the minimum and maximum value constraints
@@ -1363,11 +1368,14 @@ $(document).ready(function () {
             }
           });
 
-          $(document).on('mouseup', function () {
+          $(document).on('mouseup touchend', function () {
             isDragging = false;
-            $(document).off('mousemove');
-            $(document).off('mouseup');
+            $(document).off('mousemove touchmove');
+            $(document).off('mouseup touchend');
           });
+
+          // Prevent default touch actions to avoid scrolling issues
+          event.preventDefault();
         });
       } else if (type === 'input') {
         dragInput.on('keydown', function (event) {
