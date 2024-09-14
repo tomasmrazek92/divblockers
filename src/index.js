@@ -351,15 +351,15 @@ $(document).ready(function () {
   });
 
   // Init
-
+  let loaderState = sessionStorage.getItem('loaderState') === 'true';
   window.scrollTo(0, 0); // Set scroll position to top after page load
   $('.page-wrapper').css('opacity', '1');
   if (!loaderState) {
-    alert('Preloader True');
+    alert(sessionStorage.getItem('loaderState'));
     initLoader();
     sessionStorage.setItem('loaderState', 'true');
   } else {
-    alert('Preloader False');
+    alert(sessionStorage.getItem('loaderState'));
     revealSite();
   }
 
