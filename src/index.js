@@ -586,7 +586,6 @@ $(document).ready(function () {
         end: 'bottom bottom',
         scrub: 1,
         invalidateOnRefresh: true,
-        markers: true,
       },
     });
 
@@ -627,7 +626,6 @@ $(document).ready(function () {
         end: '40px bottom',
         scrub: 1,
         invalidateOnRefresh: true,
-        markers: true,
       },
     });
 
@@ -1284,7 +1282,7 @@ $(document).ready(function () {
         direction: 'horizontal',
         slidesPerView: 1,
         spaceBetween: 16,
-        initialSlide: 0,
+        initialSlide: 1,
         threshold: 10,
         freeMode: {
           enabled: false,
@@ -1482,4 +1480,65 @@ $(document).ready(function () {
 
   setupDraggers(draggers);
   // #endregion
+
+  // Ensure GSAP and MotionPathPlugin are loaded
+  gsap.registerPlugin(MotionPathPlugin);
+
+  // Select all elements with the class '.no-code_icon'
+  const icons = document.querySelectorAll('.no-code_icon');
+
+  // Function to create the animation
+  function animateIcons() {
+    // Convert NodeList to an array and shuffle it for random order
+    const shuffledIcons = gsap.utils.shuffle([...icons]);
+
+    // Timeline with repeat -1 for looping
+    const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+
+    shuffledIcons.forEach((icon) => {
+      // Generate random values for the motion path
+      const randomX = gsap.utils.random(-100, 100); // Random horizontal spread
+      const controlX = gsap.utils.random(-50, 50); // Slight random curve control
+
+      gsap.set(icon, { opacity: 0 });
+
+      // Add animation to the timeline
+      tl.to(
+        icon,
+        {
+          motionPath: {
+            path: [
+              { x: 0, y: 0 }, // Start at the bottom
+              { x: controlX, y: -50 }, // Mid control point for gentle arc
+              { x: randomX, y: -100 }, // End at the top with a spread
+            ],
+            curviness: 1.5, // Higher curviness for more defined arc
+            autoRotate: false, // Prevent rotation along the path
+          },
+          duration: 2, // Duration of each animation
+          keyframes: {
+            '25%': {
+              opacity: 1,
+            },
+            '50%': {
+              opacity: 1,
+            },
+            '100%': {
+              opacity: 0,
+            },
+          },
+          opacity: 0, // Fade out at the end
+          ease: 'power1.inOut', // Ease for a smoother effect
+          onComplete: () => {
+            // Reset to original position and opacity after animation
+            gsap.set(icon, { x: 0, y: 0, opacity: 0 });
+          },
+        },
+        '+=0.2'
+      ); // Staggering delay between each icon animation
+    });
+  }
+
+  // Call the animation function
+  animateIcons();
 });
