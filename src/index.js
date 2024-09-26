@@ -150,14 +150,15 @@ $(document).ready(function () {
   form.addEventListener('submit', logSubmit);
 
   let formInputs = $('.form_input');
-  console.log(formInputs);
 
   formInputs.hover(
     function () {
       $(this).siblings().addClass('active');
     },
     function () {
-      $(this).siblings().removeClass('active');
+      if (!$(this).is(':focus')) {
+        $(this).siblings().removeClass('active');
+      }
     }
   );
 
