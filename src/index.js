@@ -170,43 +170,52 @@ $(document).ready(function () {
   });
 
   function copyEmails() {
-    // Paste here
-    var $temp = $('<input>');
     let timeOut;
 
     // Click
     $('.sidebar_email').click(function () {
       var $url = $(this).text();
       let ogText = $('.sidebar_label').text();
+      copyToClipboard($url);
 
-      $('body').append($temp);
-      $temp.val($url).select();
-      document.execCommand('copy');
-      $temp.remove();
-
-      clearTimeout(timeOut); // Corrected the function name and variable consistency
-      $('.sidebar_label').text('Copied to a clipboard');
+      clearTimeout(timeOut);
+      $('.sidebar_label').text('Copied to clipboard');
+      $('.sidebar_label').parent('.opacity-60').css('opacity', '1');
+      $('.sidebar_label').css('color', '#0084ff');
       timeOut = setTimeout(() => {
-        // Corrected the function name and fixed variable naming consistency
         $('.sidebar_label').text(ogText);
+        $('.sidebar_label').parent('.opacity-60').css('opacity', '0.6');
+        $('.sidebar_label').css('color', 'inherit');
       }, 2000);
     });
 
     // Click
     $('#copyEmailFooter').click(function () {
-      var $url = 'hello@divblockers.com';
-      $('body').append($temp);
-      $temp.val($url).select();
-      document.execCommand('copy');
-      $temp.remove();
+      var $url = 'team@divblockers.com';
+      copyToClipboard($url);
 
-      clearTimeout(timeOut); // Corrected the function name and variable consistency
-      $(this).find('.meta-text').text('Copied to a clipboard');
+      clearTimeout(timeOut);
+      $(this).find('.meta-text').text('Copied to clipboard');
       timeOut = setTimeout(() => {
-        // Corrected the function name and fixed variable naming consistency
         $(this).find('.meta-text').text('Email');
       }, 2000);
     });
+  }
+
+  // Function to handle copying text to clipboard
+  function copyToClipboard(text) {
+    var $temp = $('<textarea>');
+    $temp.val(text).css({
+      position: 'absolute',
+      left: '-9999px',
+      top: '0',
+      readonly: true,
+    });
+
+    $('body').append($temp);
+    $temp.select();
+    document.execCommand('copy');
+    $temp.remove();
   }
 
   copyEmails();
@@ -1137,21 +1146,32 @@ $(document).ready(function () {
 
   // #endregion
 
-  // #region Clients
+  // #region Rotatin Words
+  const locations = [
+    'Prague',
+    'New York',
+    'San Francisco',
+    'London',
+    'Chicago',
+    'Vienna',
+    'Amsterdam',
+    'Los Angeles',
+  ];
 
-  function loopPlaces(parent) {
+  const hobbies = [
+    'playing Playstation',
+    'heavy lifting',
+    'bing-watching',
+    'snowboarding',
+    'cutting boxes in VR',
+    'thai boxing',
+    'road cycling',
+    'beachballing',
+  ];
+
+  function loopPlaces(parent, springs) {
     gsap.registerPlugin(TextPlugin);
 
-    const springs = [
-      'Prague',
-      'New York',
-      'San Francisco',
-      'London',
-      'Chicago',
-      'Vienna',
-      'Amsterdam',
-      'Los Angeles',
-    ];
     let currentSpringIndex = 0; // Initialize an index to track the current spring
 
     const $parentElement = $(parent);
@@ -1204,9 +1224,8 @@ $(document).ready(function () {
     animateElements(parent); // Start the animation loop
   }
 
-  $('.section_head-text-reveal').each(function () {
-    loopPlaces($(this));
-  });
+  loopPlaces($('#clientsLoc'), locations);
+  loopPlaces($('#hobbies'), hobbies);
 
   // #endregion
 
@@ -1489,55 +1508,81 @@ $(document).ready(function () {
   const icons = document.querySelectorAll('.no-code_icon');
 
   // Function to create the animation
-  function animateIcons() {
-    // Convert NodeList to an array and shuffle it for random order
-    const shuffledIcons = gsap.utils.shuffle([...icons]);
+  function animateIcon(icon, index) {
+    // Generate random values for the motion path
+    const startX = gsap.utils.random(-50, 50); // Slight random curve control
+    const randomX = gsap.utils.random(-50, 50); // Random horizontal spread
+
+    gsap.set(icon, { opacity: 0, x: startX });
 
     // Timeline with repeat -1 for looping
-    const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
-
-    shuffledIcons.forEach((icon) => {
-      // Generate random values for the motion path
-      const randomX = gsap.utils.random(-100, 100); // Random horizontal spread
-      const controlX = gsap.utils.random(-50, 50); // Slight random curve control
-
-      gsap.set(icon, { opacity: 0 });
-
-      // Add animation to the timeline
-      tl.to(
-        icon,
-        {
-          motionPath: {
-            path: [
-              { x: 0, y: 0 }, // Start at the bottom
-              { x: controlX, y: -50 }, // Mid control point for gentle arc
-              { x: randomX, y: -100 }, // End at the top with a spread
-            ],
-            curviness: 1.5, // Higher curviness for more defined arc
-            autoRotate: false, // Prevent rotation along the path
-          },
-          duration: 2, // Duration of each animation
-          keyframes: {
-            '25%': {
-              opacity: 1,
-            },
-            '50%': {
-              opacity: 1,
-            },
-            '100%': {
-              opacity: 0,
-            },
-          },
-          opacity: 0, // Fade out at the end
-          ease: 'power1.inOut', // Ease for a smoother effect
-          onComplete: () => {
-            // Reset to original position and opacity after animation
-            gsap.set(icon, { x: 0, y: 0, opacity: 0 });
-          },
-        },
-        '+=0.2'
-      ); // Staggering delay between each icon animation
+    const tl = gsap.timeline({
+      delay: 0.625 * index,
+      repeat: -1,
+      repeatDelay: 0.5 * icons.length,
+      paused: true,
     });
+
+    // Add animation to the timeline
+    tl.to(icon, {
+      motionPath: {
+        path: [
+          { x: startX, y: 0 }, // Start at the bottom0.
+          { x: randomX, y: -100 }, // End at the top with a spread
+        ],
+        curviness: 0.5, // Higher curviness for more defined arc
+        autoRotate: false, // Prevent rotation along the path
+      },
+      duration: 2.5, // Duration of each animation
+      keyframes: {
+        '0%': {
+          opacity: 0,
+        },
+        '25%': {
+          opacity: 1,
+        },
+        '50%': {
+          opacity: 1,
+        },
+        '100%': {
+          opacity: 0,
+        },
+      },
+      opacity: 0, // Fade out at the end
+      ease: 'power1.out', // Ease for a smoother effect
+      onComplete: () => {
+        // Reset to original position and opacity after animation
+        gsap.set(icon, { x: 0, y: 0, opacity: 0 });
+      },
+    });
+
+    return tl;
+  }
+
+  function animateIcons() {
+    let timelines = [];
+
+    $('.no-code_trigger').hover(
+      () => {
+        // Initialize and store timelines for each icon
+        // Convert NodeList to an array and shuffle it for random order
+        const shuffledIcons = gsap.utils.shuffle([...icons]);
+
+        timelines = shuffledIcons.map((icon, index) => {
+          const tl = animateIcon(icon, index);
+          tl.play();
+          return tl;
+        });
+      },
+      () => {
+        // Kill all timelines and clear the array
+        timelines.forEach((tl, index) => {
+          tl.kill();
+          gsap.set(icons, { clearProps: 'all' }); // Clear all properties set by GSAP
+        });
+        timelines = [];
+      }
+    );
   }
 
   // Call the animation function
