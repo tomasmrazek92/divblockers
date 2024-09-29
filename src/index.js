@@ -1,4 +1,7 @@
 $(document).ready(function () {
+  // Ensure GSAP is loaded
+  gsap.registerPlugin(MotionPathPlugin);
+
   // #region Utility Classes
 
   function toggleWFLabel(label, state) {
@@ -1501,68 +1504,102 @@ $(document).ready(function () {
   setupDraggers(draggers);
   // #endregion
 
-  // Ensure GSAP and MotionPathPlugin are loaded
-  gsap.registerPlugin(MotionPathPlugin);
+  // #region Easters
 
-  // Select all elements with the class '.no-code_icon'
-  const icons = document.querySelectorAll('.no-code_icon');
-
-  // Function to create the animation
-  function animateIcon(icon, index) {
-    // Generate random values for the motion path
-    const startX = gsap.utils.random(-50, 50); // Slight random curve control
-    const randomX = gsap.utils.random(-50, 50); // Random horizontal spread
-
-    gsap.set(icon, { opacity: 0, x: startX });
-
-    // Timeline with repeat -1 for looping
-    const tl = gsap.timeline({
-      delay: 0.625 * index,
-      repeat: -1,
-      repeatDelay: 0.5 * icons.length,
+  // Divblockers UI
+  $('.divblockers').each(function () {
+    let tl = gsap.timeline({
       paused: true,
-    });
-
-    // Add animation to the timeline
-    tl.to(icon, {
-      motionPath: {
-        path: [
-          { x: startX, y: 0 }, // Start at the bottom0.
-          { x: randomX, y: -100 }, // End at the top with a spread
-        ],
-        curviness: 0.5, // Higher curviness for more defined arc
-        autoRotate: false, // Prevent rotation along the path
-      },
-      duration: 2.5, // Duration of each animation
-      keyframes: {
-        '0%': {
-          opacity: 0,
-        },
-        '25%': {
-          opacity: 1,
-        },
-        '50%': {
-          opacity: 1,
-        },
-        '100%': {
-          opacity: 0,
-        },
-      },
-      opacity: 0, // Fade out at the end
-      ease: 'power1.out', // Ease for a smoother effect
-      onComplete: () => {
-        // Reset to original position and opacity after animation
-        gsap.set(icon, { x: 0, y: 0, opacity: 0 });
+      defaults: {
+        ease: 'power4.out',
+        duration: 0.4,
       },
     });
+    let lines = $('[divblockers-wrap]').find('.about_list-line');
+    let label = $('[divblockers-wrap]').find('.div-block_label');
 
-    return tl;
-  }
+    tl.to(label, { yPercent: -100 });
+    tl.to(lines, { scale: 1 }, '<');
 
-  function animateIcons() {
+    $(this).hover(
+      () => {
+        tl.play();
+      },
+      () => {
+        tl.reverse();
+      }
+    );
+  });
+
+  // Pixels Off
+  $('._4-pixels-off').each(function () {
+    $(this).on('mouseenter', function () {
+      let tl = gsap.timeline();
+      tl.to($(this), { y: '4px', ease: 'power2.out', duration: 0.3 });
+      tl.to($(this), { rotate: '6deg', ease: 'bounce.out' }, '-=0.1');
+    });
+  });
+
+  // No Code Icons
+  $('.no-code_trigger').each(function () {
     let timelines = [];
 
-    $('.no-code_trigger').hover(
+    // Select all elements with the class '.no-code_icon'
+    const icons = document.querySelectorAll('.no-code_icon');
+
+    // Function to create the animation
+    function animateIcon(icon, index) {
+      // Generate random values for the motion path
+      const startX = gsap.utils.random(-50, 50); // Slight random curve control
+      const randomX = gsap.utils.random(-50, 50); // Random horizontal spread
+
+      gsap.set(icon, { opacity: 0, x: startX });
+
+      // Timeline with repeat -1 for looping
+      const tl = gsap.timeline({
+        delay: 0.625 * index,
+        repeat: -1,
+        repeatDelay: 0.5 * icons.length,
+        paused: true,
+      });
+
+      // Add animation to the timeline
+      tl.to(icon, {
+        motionPath: {
+          path: [
+            { x: startX, y: 0 }, // Start at the bottom0.
+            { x: randomX, y: -100 }, // End at the top with a spread
+          ],
+          curviness: 0.5, // Higher curviness for more defined arc
+          autoRotate: false, // Prevent rotation along the path
+        },
+        duration: 2.5, // Duration of each animation
+        keyframes: {
+          '0%': {
+            opacity: 0,
+          },
+          '25%': {
+            opacity: 1,
+          },
+          '50%': {
+            opacity: 1,
+          },
+          '100%': {
+            opacity: 0,
+          },
+        },
+        opacity: 0, // Fade out at the end
+        ease: 'power1.out', // Ease for a smoother effect
+        onComplete: () => {
+          // Reset to original position and opacity after animation
+          gsap.set(icon, { x: 0, y: 0, opacity: 0 });
+        },
+      });
+
+      return tl;
+    }
+
+    $(this).hover(
       () => {
         // Initialize and store timelines for each icon
         // Convert NodeList to an array and shuffle it for random order
@@ -1583,8 +1620,7 @@ $(document).ready(function () {
         timelines = [];
       }
     );
-  }
+  });
 
-  // Call the animation function
-  animateIcons();
+  // #endregion
 });
