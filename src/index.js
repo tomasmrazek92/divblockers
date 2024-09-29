@@ -1286,8 +1286,11 @@ $(document).ready(function () {
     });
 
     $(window).on('resize', function () {
-      quoteEl.attr('style', '');
-      swiper.slideTo(3);
+      const width = window.innerWidth;
+      if (width > 991) {
+        quoteEl.attr('style', '');
+        swiper.slideTo(3);
+      }
     });
   }
 
@@ -1304,6 +1307,7 @@ $(document).ready(function () {
       0: {
         direction: 'horizontal',
         slidesPerView: 1,
+        initialSlide: 0,
         spaceBetween: 8,
         threshold: 10,
         freeMode: {
@@ -1312,6 +1316,7 @@ $(document).ready(function () {
       },
       992: {
         direction: 'vertical',
+        initialSlide: 3,
         slidesPerView: 1,
         spaceBetween: 0,
         threshold: 40,
@@ -1323,15 +1328,6 @@ $(document).ready(function () {
           enabled: true,
           thresholdDelta: 20,
         },
-      },
-    },
-    on: {
-      init: function () {
-        const width = window.innerWidth;
-        if (width > 991) {
-          this.slideTo(3); // Use `this` to reference the swiper instance
-        }
-        updateQuote(this);
       },
     },
   });
