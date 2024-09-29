@@ -1305,7 +1305,7 @@ $(document).ready(function () {
         direction: 'horizontal',
         slidesPerView: 1,
         spaceBetween: 16,
-        initialSlide: 1,
+        initialSlide: 0,
         threshold: 10,
         freeMode: {
           enabled: false,
@@ -1325,6 +1325,22 @@ $(document).ready(function () {
           enabled: true,
           thresholdDelta: 20,
         },
+      },
+    },
+    on: {
+      init: function () {
+        const setInitialSlide = () => {
+          const width = window.innerWidth;
+          if (width < 992) {
+            this.params.initialSlide = 0; // for screens < 992px
+          } else {
+            this.params.initialSlide = 3; // for screens >= 992px
+          }
+        };
+
+        setInitialSlide();
+        this.update(); // Update the swiper after changing initialSlide
+        updateQuote(this);
       },
     },
   });
