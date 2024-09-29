@@ -1305,7 +1305,6 @@ $(document).ready(function () {
         direction: 'horizontal',
         slidesPerView: 1,
         spaceBetween: 8,
-        initialSlide: 0,
         threshold: 10,
         freeMode: {
           enabled: false,
@@ -1315,7 +1314,6 @@ $(document).ready(function () {
         direction: 'vertical',
         slidesPerView: 1,
         spaceBetween: 0,
-        initialSlide: 3,
         threshold: 40,
         freeMode: {
           enabled: true,
@@ -1329,18 +1327,11 @@ $(document).ready(function () {
     },
     on: {
       init: function () {
-        const setInitialSlide = () => {
-          const width = window.innerWidth;
-          if (width < 992) {
-            this.params.initialSlide = 0; // for screens < 992px
-          } else {
-            this.params.initialSlide = 3; // for screens >= 992px
-          }
-        };
-
-        setInitialSlide();
-        this.update(); // Update the swiper after changing initialSlide
-        updateQuote(this);
+        const width = window.innerWidth;
+        if (width > 991) {
+          this.slideTo(3); // Use `this` to reference the swiper instance
+          updateQuote(this);
+        }
       },
     },
   });
