@@ -1330,8 +1330,8 @@ $(document).ready(function () {
         const width = window.innerWidth;
         if (width > 991) {
           this.slideTo(3); // Use `this` to reference the swiper instance
-          updateQuote(this);
         }
+        updateQuote(this);
       },
     },
   });
