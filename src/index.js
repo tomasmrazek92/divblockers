@@ -1304,7 +1304,7 @@ $(document).ready(function () {
       0: {
         direction: 'horizontal',
         slidesPerView: 1,
-        spaceBetween: 16,
+        spaceBetween: 8,
         initialSlide: 0,
         threshold: 10,
         freeMode: {
